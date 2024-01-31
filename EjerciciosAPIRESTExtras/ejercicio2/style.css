@@ -1,0 +1,54 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+#character-container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+}
+
+#character-image {
+    width: 200px;
+    height: auto;
+    border-radius: 10px 0 0 10px;
+}
+
+#character-info {
+    padding: 20px;
+}
+
+#character-name {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+#character-id {
+    margin-top: 5px;
+    color: #888;
+}
+
+h3 {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+#character-movies {
+    list-style-type: none;
+    padding: 0;
+}
+
+#character-movies li {
+    margin-bottom: 5px;
+    color: #555;
+}
