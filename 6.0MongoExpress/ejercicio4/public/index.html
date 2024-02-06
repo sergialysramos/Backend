@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Menú</title>
+</head>
+
+<body>
+    <h1>Añadir Nuevo Menú</h1>
+    <form id="formularioMenu" method="POST">
+        <label for="numeroMenu">Número de Menú:</label>
+        <input type="text" id="numeroMenu" name="numeroMenu" required><br><br>
+
+        <label for="primerPlato">Primer Plato:</label>
+        <input type="text" id="primerPlato" name="primerPlato" required><br><br>
+
+        <label for="postre">Postre:</label>
+        <input type="text" id="postre" name="postre" required><br><br>
+
+        <label for="segundoPlato">Segundo Plato:</label>
+        <input type="text" id="segundoPlato" name="segundoPlato" required><br><br>
+
+        <label for="precio">Precio:</label>
+        <input type="number" id="precio" name="precio" required><br><br>
+
+        <button type="submit">Agregar Menú</button>
+    </form>
+
+    <div id="listaMenus">
+        <table id="tablaMenus">
+            <thead>
+                <tr>
+                    <th>Número de Menú</th>
+                    <th>Primer Plato</th>
+                    <th>Postre</th>
+                    <th>Segundo Plato</th>
+                    <th>Precio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+        
+            </tbody>
+        </table>
+    </div>
+
+
+    <script>
+        document.getElementById("formularioMenu").addEventListener("submit", async function (event) {
+            event.preventDefault(); 
+
+            const numeroMenu = document.getElementById("numeroMenu").value;
+            const primerPlato = document.getElementById("primerPlato").value;
+            const postre = document.getElementById("postre").value;
+            const segundoPlato = document.getElementById("segundoPlato").value;
+            const precio = document.getElementById("precio").value;
+
+            const data = {
+                numeroMenu,
+                primerPlato,
+                postre,
+                segundoPlato,
+                precio
+            };
+
+            const response = await fetch('/api/menus');
+            const { results } = await response.json();
+
+            const existingMenu = results.find(menu => menu.numeroMenu === numeroMenu);
+
+            let url = '/api/nuevoMenu'; 
+
+            if (existingMenu) {
+                url = '/api/editarMenu'; 
+            }
+
+            fetch(url, {
+                method: existingMenu ? 'PUT' : 'POST', 
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data); 
+                    alert(data.mensaje); 
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al enviar los datos al servidor');
+                });
+        });
+
+        async function mostrarMenus() {
+    try {
+        const response = await fetch('/api/menus');
+        const data = await response.json();
+
+        const tablaMenus = document.getElementById('tablaMenus');
+        const tbody = tablaMenus.querySelector('tbody');
+
+    
+        tbody.innerHTML = '';
+
+        data.results.forEach(menu => {
+            const fila = document.createElement('tr');
+
+            fila.innerHTML = `
+                <td>${menu.numeroMenu}</td>
+                <td>${menu.primerPlato}</td>
+                <td>${menu.postre}</td>
+                <td>${menu.segundoPlato}</td>
+                <td>${menu.precio}</td>
+                <td>
+                    <button onclick="borrarMenu(${menu.numeroMenu})">Borrar</button>
+                </td>
+            `;
+            tbody.appendChild(fila);
+        });
+        
+    } catch (error) {
+        console.error('Error al obtener la lista de menús:', error);
+        alert('Error al obtener la lista de menús');
+    }
+}
+
+
+
+        async function borrarMenu(numeroMenu) {
+            try {
+                const confirmar = confirm(`¿Estás seguro de eliminar el menú ${numeroMenu}?`);
+                if (confirmar) {
+                    const response = await fetch('/api/borrarMenu', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ numeroMenu: numeroMenu })
+                    });
+
+                    const data = await response.json();
+                    alert(data.mensaje);
+                    mostrarMenus(); 
+                }
+            } catch (error) {
+                console.error('Error al borrar el menú:', error);
+                alert('Error al borrar el menú');
+            }
+        }
+        
+
+
+        window.onload = mostrarMenus;
+
+
+    </script>
+</body>
+
+</html>

@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 
 
-const artistaSchema = new mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
+const artistaSchema = mongoose.Schema({
     nombre: { type: String, required: true },
     genero: { type: String, required: true },
     fechaNacimiento: { type: Date },
@@ -10,8 +9,7 @@ const artistaSchema = new mongoose.Schema({
     nombreArtistico: { type: String }
 });
 
-const discoSchema = new mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
+const discoSchema = mongoose.Schema({
     titulo: { type: String, required: true },
     artista: { type: mongoose.Schema.Types.ObjectId, ref: 'Artista', required: true },
     anyo: { type: Number, required: true },
