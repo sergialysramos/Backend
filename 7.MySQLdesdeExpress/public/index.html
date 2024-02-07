@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menús</title>
+</head>
+
+<body>
+    <h1>Menús</h1>
+    <ul id="menu-list"></ul>
+
+    <script>
+        const menuList = document.getElementById('menu-list');
+
+        fetch('/api/menus')
+            .then(response => response.json())
+            .then(menus => {
+                menus.forEach(menu => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${menu.numero_menu}: ${menu.primer_plato}, ${menu.segundo_plato}, ${menu.postre}, Precio: ${menu.precio}`;
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Eliminar';
+                    deleteButton.addEventListener('click', () => {
+                        eliminarMenu(menu.numero_menu);
+                    });
+
+                    listItem.appendChild(deleteButton);
+
+                    menuList.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error al cargar menús:', error);
+            });
+
+        function eliminarMenu(numeroMenu) {
+            fetch('/api/borrarMenu', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ numero_menu: numeroMenu })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error al eliminar menú:', error);
+                });
+        }
+    </script>
+</body>
+
+</html>

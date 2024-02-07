@@ -23,12 +23,12 @@ async function connectMongo() {
 connectMongo()
 
 
-app.get('/api/menus', async(req, res)=>{
+app.get('/api/menus', async (req, res) => {
     try {
         const results = await app.locals.db.collection('menus').find({}).toArray()
-        res.send({mensaje: "Petición satisfecha", results})    
+        res.send({ mensaje: "Petición satisfecha", results })
     } catch (error) {
-        res.send({mensaje: "Petición No resuelta", error})
+        res.send({ mensaje: "Petición No resuelta", error })
     }
 })
 
@@ -75,7 +75,6 @@ app.put('/api/editarMenu', async (req, res) => {
 app.delete('/api/borrarMenu', async (req, res) => {
     try {
         const { numeroMenu } = req.body;
-        // Verificar si existe el menú con el número indicado y eliminarlo
         const result = await app.locals.db.collection('menus').deleteOne({ numeroMenu: numeroMenu });
 
         if (result.deletedCount === 1) {
